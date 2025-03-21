@@ -16,12 +16,15 @@ public class ReproductorAudio {
     private MediaPlayer mediaPlayer;
     private boolean pausado;
     private Duration posicionPausa;
+    private double volumen;
     
     public ReproductorAudio() {
         mediaPlayer = null;
         pausado = false;
         posicionPausa = Duration.ZERO;
-                try {
+        volumen = 1.0;
+        
+        try {
             javafx.application.Platform.startup(() -> {});
         } catch (IllegalStateException e) {
         }
@@ -36,6 +39,7 @@ public class ReproductorAudio {
             File file = new File(rutaArchivo);
             Media media = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setVolume(volumen);
             pausado = false;
             posicionPausa = Duration.ZERO;
             
@@ -49,6 +53,17 @@ public class ReproductorAudio {
             System.out.println("Error al cargar: " + e.getMessage());
             return false;
         }
+    }
+    
+    public void setVolumen(double valor) {
+        this.volumen = valor;
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(valor);
+        }
+    }
+    
+    public double getVolumen() {
+        return volumen;
     }
     
     public void play() {
