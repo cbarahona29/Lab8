@@ -3,10 +3,8 @@ package SpotifyLab8;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.event.*;
 
 public class ReproductorMusica extends JFrame {
     private ListaEnlazada listaReproduccion;
@@ -20,7 +18,6 @@ public class ReproductorMusica extends JFrame {
     private JButton btnPlay, btnPause, btnStop, btnAdd, btnRemove;
     private ImageIcon iconoDefault;
     
-    // Iconos para los botones
     private ImageIcon iconoPlay;
     private ImageIcon iconoPause;
     private ImageIcon iconoStop;
@@ -41,7 +38,6 @@ public class ReproductorMusica extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        // Cargar iconos para los botones
         cargarIconosBotones();
         
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
@@ -66,7 +62,6 @@ public class ReproductorMusica extends JFrame {
         JPanel panelDerecho = new JPanel(new BorderLayout());
         
         JPanel panelImagen = new JPanel(new BorderLayout());
-        // Intentar cargar la imagen por defecto desde varias ubicaciones
         iconoDefault = cargarImagenDefault();
         lblImagen = new JLabel(iconoDefault);
         lblImagen.setHorizontalAlignment(JLabel.CENTER);
@@ -92,18 +87,14 @@ public class ReproductorMusica extends JFrame {
         
         JPanel panelControles = new JPanel(new FlowLayout());
         
-        // Crear botones con iconos o texto según disponibilidad
         btnPlay = new JButton();
         btnPause = new JButton();
         btnStop = new JButton();
         
-        // Establecer los iconos a los botones o usar texto como alternativa
         if (iconoPlay != null) {
             btnPlay.setIcon(iconoPlay);
-            System.out.println("Icono Play establecido correctamente");
         } else {
             btnPlay.setText("Play");
-            System.out.println("Usando texto 'Play' en lugar de icono");
         }
         
         if (iconoPause != null) {
@@ -118,13 +109,10 @@ public class ReproductorMusica extends JFrame {
             btnStop.setText("Stop");
         }
         
-        // Ajustar tamaño de los botones
         btnPlay.setPreferredSize(new Dimension(50, 50));
         btnPause.setPreferredSize(new Dimension(50, 50));
         btnStop.setPreferredSize(new Dimension(50, 50));
         
-        // Configurar apariencia de los botones
-        // Mantener los bordes pintados para mejor visibilidad
         btnPlay.setBorderPainted(true);
         btnPlay.setContentAreaFilled(true);
         btnPlay.setFocusPainted(true);
@@ -137,7 +125,6 @@ public class ReproductorMusica extends JFrame {
         btnStop.setContentAreaFilled(true);
         btnStop.setFocusPainted(true);
         
-        // Agregar los botones al panel de controles
         panelControles.add(btnPlay);
         panelControles.add(btnPause);
         panelControles.add(btnStop);
@@ -176,69 +163,50 @@ public class ReproductorMusica extends JFrame {
         
         configurarEventos();
         
-        // Imprimir información de depuración
-        System.out.println("btnPlay es nulo? " + (btnPlay == null));
-        System.out.println("btnPlay es visible? " + btnPlay.isVisible());
-        System.out.println("btnPause es nulo? " + (btnPause == null));
-        System.out.println("btnStop es nulo? " + (btnStop == null));
-        
         setVisible(true);
     }
     
     private ImageIcon cargarImagenDefault() {
         ImageIcon icono = null;
         try {
-            // Intentar varias ubicaciones
             File file = new File("default_album.png");
             if (file.exists()) {
                 icono = new ImageIcon(file.getAbsolutePath());
             } else {
-                // Intentar cargar desde recursos
                 icono = new ImageIcon(getClass().getResource("/default_album.png"));
-                if (icono == null || icono.getIconWidth() <= 0) {
-                    // Crear un icono básico como último recurso
-                    icono = new ImageIcon(new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB));
-                }
             }
             
-            // Escalar la imagen
             if (icono != null && icono.getIconWidth() > 0) {
                 Image img = icono.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
                 icono = new ImageIcon(img);
             }
         } catch (Exception e) {
-            System.err.println("Error al cargar la imagen por defecto: " + e.getMessage());
-            // Crear un icono vacío como último recurso
-            icono = new ImageIcon(new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB));
+            icono = null;
         }
         return icono;
     }
     
     private void cargarIconosBotones() {
         try {
-            // Primero intentar cargar desde ruta absoluta
             File playFile = new File("images/botonplay.png");
-            File pauseFile = new File("images/botonpause.png");
-            File stopFile = new File("images/botonstop.png");
+            File pauseFile = new File("images/botonstop.png");
+            File stopFile = new File("images/botonpause.png");
             
             boolean iconosEncontrados = false;
             
             if (playFile.exists() && pauseFile.exists() && stopFile.exists()) {
-                System.out.println("Cargando iconos desde ruta absoluta");
                 iconoPlay = new ImageIcon(playFile.getAbsolutePath());
                 iconoPause = new ImageIcon(pauseFile.getAbsolutePath());
                 iconoStop = new ImageIcon(stopFile.getAbsolutePath());
                 iconosEncontrados = true;
             }
             
-            // Segundo intento: ruta "src/images"
             if (!iconosEncontrados) {
                 playFile = new File("src/images/botonplay.png");
-                pauseFile = new File("src/images/botonpause.png");
-                stopFile = new File("src/images/botonstop.png");
+                pauseFile = new File("src/images/botonstop.png");
+                stopFile = new File("src/images/botonpause.png");
                 
                 if (playFile.exists() && pauseFile.exists() && stopFile.exists()) {
-                    System.out.println("Cargando iconos desde src/images");
                     iconoPlay = new ImageIcon(playFile.getAbsolutePath());
                     iconoPause = new ImageIcon(pauseFile.getAbsolutePath());
                     iconoStop = new ImageIcon(stopFile.getAbsolutePath());
@@ -246,14 +214,12 @@ public class ReproductorMusica extends JFrame {
                 }
             }
             
-            // Tercer intento: ruta "src/SpotifyLab8/images"
             if (!iconosEncontrados) {
                 playFile = new File("src/SpotifyLab8/images/botonplay.png");
-                pauseFile = new File("src/SpotifyLab8/images/botonpause.png");
-                stopFile = new File("src/SpotifyLab8/images/botonstop.png");
+                pauseFile = new File("src/SpotifyLab8/images/botonstop.png");
+                stopFile = new File("src/SpotifyLab8/images/botonpause.png");
                 
                 if (playFile.exists() && pauseFile.exists() && stopFile.exists()) {
-                    System.out.println("Cargando iconos desde src/SpotifyLab8/images");
                     iconoPlay = new ImageIcon(playFile.getAbsolutePath());
                     iconoPause = new ImageIcon(pauseFile.getAbsolutePath());
                     iconoStop = new ImageIcon(stopFile.getAbsolutePath());
@@ -261,34 +227,26 @@ public class ReproductorMusica extends JFrame {
                 }
             }
             
-            // Cuarto intento: intentar con recursos
             if (!iconosEncontrados) {
-                System.out.println("Intentando cargar desde recursos");
                 iconoPlay = new ImageIcon(getClass().getResource("/images/botonplay.png"));
-                iconoPause = new ImageIcon(getClass().getResource("/images/botonpause.png"));
-                iconoStop = new ImageIcon(getClass().getResource("/images/botonstop.png"));
+                iconoPause = new ImageIcon(getClass().getResource("/images/botonstop.png"));
+                iconoStop = new ImageIcon(getClass().getResource("/images/botonpause.png"));
                 
-                // Comprobar si se cargaron los recursos
                 if (iconoPlay != null && iconoPlay.getIconWidth() > 0) {
                     iconosEncontrados = true;
                 }
             }
             
-            // Redimensionar los iconos si se cargaron
             if (iconosEncontrados) {
                 iconoPlay = new ImageIcon(iconoPlay.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
                 iconoPause = new ImageIcon(iconoPause.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
                 iconoStop = new ImageIcon(iconoStop.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
-                System.out.println("Iconos cargados y redimensionados correctamente");
             } else {
-                System.err.println("No se pudieron encontrar los archivos de iconos");
                 iconoPlay = null;
                 iconoPause = null;
                 iconoStop = null;
             }
         } catch (Exception e) {
-            System.err.println("Error al cargar los iconos: " + e.getMessage());
-            e.printStackTrace();
             iconoPlay = null;
             iconoPause = null;
             iconoStop = null;
